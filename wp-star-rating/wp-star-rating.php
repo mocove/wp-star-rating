@@ -12,6 +12,13 @@ function wpsr_hello_world() {
   echo "Hello World.";
 }
 
+function wpsr_comment_ratings($comment_text) {
+  //add_comment_meta($comment_id, 'rate', $_POST['rate']);
+  return "This comment has been filtered: " . $comment_text;
+}
+
+add_filter('comment_text', 'wpsr_comment_ratings');
+
 /*
 Life-cycle hooks
 */
