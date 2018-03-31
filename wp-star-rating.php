@@ -13,7 +13,7 @@ function wpsr_hello_world() {
 }
 
 function wpsr_comment_ratings($comment_id) {
-    add_comment_meta($comment_id, 'wpsr_rate', 'test', true);
+    add_comment_meta($comment_id, 'wpsr_rate', $_POST['wpsr_rate'], true);
 }
 
 function wpsr_render_ratings($comment_text, $comment) {
@@ -33,15 +33,22 @@ function wpsr_render_ratings($comment_text, $comment) {
 //   return dirname(__FILE__) . '/recipe_comments.php';
 // }
 
-function wpsr_ratings_in_form($fields) {
-  $fields['wpsr_rating'] = '';
-  return $fields;
+function wpsr_ratings_in_form() {
+  echo '
+    <span id="wpsr_rate_1">1</span>
+    <span id="wpsr_rate_2">2</span>
+    <span id="wpsr_rate_3">3</span>
+    <span id="wpsr_rate_4">4</span>
+    <span id="wpsr_rate_5">5</span>
+    <input type="hidden" name="wpsr_rate" id="wpsr_rate" value="" />
+    ';
 }
+
 
 add_action('comment_post', 'wpsr_comment_ratings');
 add_filter('comment_text', 'wpsr_render_ratings', 10, 3);
 //add_filter('comments_template', 'wpsr_recipe_comments_template');
-add_filter('comment_form_default_fields', 'wpsr_ratings_in_form'); // displays rating in comment form
+add_action('comment_form_top', 'wpsr_ratings_in_form'); // displays rating in comment form
 wp_enqueue_script('wpsr-script', plugins_url('main.js', __FILE__), array('jquery'));
 
 /*
