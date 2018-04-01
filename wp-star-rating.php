@@ -33,13 +33,14 @@ function wpsr_render_ratings($comment_text, $comment) {
 //   return dirname(__FILE__) . '/recipe_comments.php';
 // }
 
-function wpsr_ratings_in_form() {
+function wpsr_ratings_in_form() { // TODO: Virker ikke.
   echo '
-    <span id="wpsr_rate_1">1</span>
+    <img src="<?php echo plugins_url('/res/star.svg'); ?>" id="wpsr_rate_1" />
     <span id="wpsr_rate_2">2</span>
     <span id="wpsr_rate_3">3</span>
     <span id="wpsr_rate_4">4</span>
     <span id="wpsr_rate_5">5</span>
+    <span id="wpsr_rate_clear">Clear rating</span>
     <input type="hidden" name="wpsr_rate" id="wpsr_rate" value="" />
     ';
 }
@@ -50,6 +51,7 @@ add_filter('comment_text', 'wpsr_render_ratings', 10, 3);
 //add_filter('comments_template', 'wpsr_recipe_comments_template');
 add_action('comment_form_top', 'wpsr_ratings_in_form'); // displays rating in comment form
 wp_enqueue_script('wpsr-script', plugins_url('main.js', __FILE__), array('jquery'));
+wp_enqueue_style('wpsr-style', plugins_url('css/wpsr_main.css', __FILE__));
 
 /*
 Life-cycle hooks
