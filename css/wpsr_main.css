@@ -1,3 +1,8 @@
-.wpsr_rating:hover {
+.wpsr_rating svg, .wpsr_rated svg {
+  height: 2em;
+  width: auto;
+}
+
+.gold svg path {
   fill: #F8D64E;
 }

@@ -14,14 +14,51 @@ function wpsr_hello_world() {
 
 function wpsr_comment_ratings($comment_id) {
     add_comment_meta($comment_id, 'wpsr_rate', $_POST['wpsr_rate'], true);
+    wpsr_update_average_rating($comment_id);
+}
+
+function wpsr_update_average_rating($comment_id) {
+  $comment = get_comment($comment_id);
+  $post_id = $comment->comment_post_ID;
+
+  //get all ratings on post and calculate average
+  $args = array(
+    'post_id' => $post_id,
+    'meta_query' => array(
+      array(
+        'key' => 'wpsr_rate'
+      )
+    )
+  );
+
+  $comments_with_ratings = get_comments($args);
+
+  $count = 0;
+  $sum = 0;
+
+  foreach ($comments_with_ratings as $comment_with_rating) {
+    $v = (int)get_comment_meta($comment_with_rating->comment_ID, 'wpsr_rate', true);
+    if ($v > 0 && $v < 6) {
+        $count = $count + 1;
+        $sum = $sum + $v;
+    }
+  }
+  $average = round($sum / $count, 1);
+  if (!add_post_meta($post_id, 'wpsr_average_rating' , $average, true)) {
+    update_post_meta($post_id, 'wpsr_average_rating' , $average);
+  }
 }
 
 function wpsr_render_ratings($comment_text, $comment) {
     $rating = get_comment_meta($comment->comment_ID, 'wpsr_rate', true);
 
-    //check for rating on comment
-    if (isset($rating) && $rating !== '' ) {
-      return 'Rating: ' . $rating . '<br / />' . $comment_text;
+    //check for rating on comment and display stars
+    if (isset($rating) && $rating !== '') {
+      $stars = '';
+      for ($i=0; $i < $rating; $i++) {
+        $stars = $stars . '<span class="wpsr_rated"><svg xmlns="http://www.w3.org/2000/svg" width="255" height="240" viewBox="0 0 51 48"><title>Star</title><path fill="#F8D64E" stroke="#000" d="m25,1 6,17h18l-14,11 5,17-15-10-15,10 5-17-14-11h18z"/></svg></span>';
+      }
+      return 'Rating: ' . $stars . '<br />' . $comment_text;
     }
     else {
       return $comment_text;
@@ -33,13 +70,38 @@ function wpsr_render_ratings($comment_text, $comment) {
 //   return dirname(__FILE__) . '/recipe_comments.php';
 // }
 
-function wpsr_ratings_in_form() { // TODO: Virker ikke.
+function wpsr_ratings_in_form() {
   echo '
-    <img src="<?php echo plugins_url('/res/star.svg'); ?>" id="wpsr_rate_1" />
-    <span id="wpsr_rate_2">2</span>
-    <span id="wpsr_rate_3">3</span>
-    <span id="wpsr_rate_4">4</span>
-    <span id="wpsr_rate_5">5</span>
+    <span id="wpsr_rate_1" class="wpsr_rating">
+      <svg xmlns="http://www.w3.org/2000/svg" width="255" height="240" viewBox="0 0 51 48">
+      <title>1 Star</title>
+      <path fill="none" stroke="#000" d="m25,1 6,17h18l-14,11 5,17-15-10-15,10 5-17-14-11h18z"/>
+      </svg>
+    </span>
+    <span id="wpsr_rate_2" class="wpsr_rating">
+      <svg xmlns="http://www.w3.org/2000/svg" width="255" height="240" viewBox="0 0 51 48">
+      <title>2 Stars</title>
+      <path fill="none" stroke="#000" d="m25,1 6,17h18l-14,11 5,17-15-10-15,10 5-17-14-11h18z"/>
+      </svg>
+    </span>
+    <span id="wpsr_rate_3" class="wpsr_rating">
+      <svg xmlns="http://www.w3.org/2000/svg" width="255" height="240" viewBox="0 0 51 48">
+      <title>3 Stars</title>
+      <path fill="none" stroke="#000" d="m25,1 6,17h18l-14,11 5,17-15-10-15,10 5-17-14-11h18z"/>
+      </svg>
+    </span>
+    <span id="wpsr_rate_4" class="wpsr_rating">
+      <svg xmlns="http://www.w3.org/2000/svg" width="255" height="240" viewBox="0 0 51 48">
+      <title>4 Stars</title>
+      <path fill="none" stroke="#000" d="m25,1 6,17h18l-14,11 5,17-15-10-15,10 5-17-14-11h18z"/>
+      </svg>
+    </span>
+    <span id="wpsr_rate_5" class="wpsr_rating">
+      <svg xmlns="http://www.w3.org/2000/svg" width="255" height="240" viewBox="0 0 51 48">
+      <title>5 Stars</title>
+      <path fill="none" stroke="#000" d="m25,1 6,17h18l-14,11 5,17-15-10-15,10 5-17-14-11h18z"/>
+      </svg>
+    </span>
     <span id="wpsr_rate_clear">Clear rating</span>
     <input type="hidden" name="wpsr_rate" id="wpsr_rate" value="" />
     ';
