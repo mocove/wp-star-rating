@@ -44,6 +44,9 @@ function wpsr_update_average_rating($comment_id) {
     }
   }
   $average = round($sum / $count, 1);
+  if (!add_post_meta($post_id, 'wpsr_number_of_ratings' , $count, true)) {
+    update_post_meta($post_id, 'wpsr_number_of_ratings' , $count);
+  }
   if (!add_post_meta($post_id, 'wpsr_average_rating' , $average, true)) {
     update_post_meta($post_id, 'wpsr_average_rating' , $average);
   }
@@ -63,6 +66,13 @@ function wpsr_render_ratings($comment_text, $comment) {
     else {
       return $comment_text;
     }
+}
+
+function wpsr_render_average_rating($content) {
+  $post_id = get_the_ID();
+  $average = get_post_meta($post_id, 'wpsr_average_rating', true);
+  $count = get_post_meta($post_id, 'wpsr_number_of_ratings', true);
+  return 'Rating: ' . $average . ' (' . $count . ' ratings)<br />' . $content;
 }
 
 // function wpsr_recipe_comments_template($comment_template) {
@@ -112,6 +122,7 @@ add_action('comment_post', 'wpsr_comment_ratings');
 add_filter('comment_text', 'wpsr_render_ratings', 10, 3);
 //add_filter('comments_template', 'wpsr_recipe_comments_template');
 add_action('comment_form_top', 'wpsr_ratings_in_form'); // displays rating in comment form
+add_filter('the_content', 'wpsr_render_average_rating');
 wp_enqueue_script('wpsr-script', plugins_url('main.js', __FILE__), array('jquery'));
 wp_enqueue_style('wpsr-style', plugins_url('css/wpsr_main.css', __FILE__));
 
