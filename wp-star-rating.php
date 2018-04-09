@@ -75,11 +75,6 @@ function wpsr_render_average_rating($content) {
   return 'Rating: ' . $average . ' (' . $count . ' ratings)<br />' . $content;
 }
 
-// function wpsr_recipe_comments_template($comment_template) {
-//   global $post;
-//   return dirname(__FILE__) . '/recipe_comments.php';
-// }
-
 function wpsr_ratings_in_form() {
   echo '
     <span id="wpsr_rate_1" class="wpsr_rating">
@@ -117,6 +112,40 @@ function wpsr_ratings_in_form() {
     ';
 }
 
+function wpsr_register_custom_post_type() {
+  register_post_type(
+    'wpsr_recipe',
+    array(
+      'labels' => array(
+        'name' => __('Recipes'),
+        'singular_name' => __('Recipe')
+      ),
+      'public' => true,
+      'has_archive' => false,
+      'rewrite' => array('slug' => 'recipe')
+    )
+  );
+}
+
+function wpsr_add_custom_post_type($query) {
+  if(is_home() && $query->is_main_query()) {
+    $query->set('post-type', ['post', 'page', 'wpsr_recipe']);
+  }
+  return $query;
+}
+
+function wpsr_get_custom_type_recipe_template($single_template) {
+  global $post;
+
+  if ($post->post_type == 'wpsr_recipe') {
+    $single_template = dirname(__FILE__) . '/res/template/single-recipe.php';
+  }
+  return $single_template;
+}
+
+add_action('init', 'wpsr_register_custom_post_type');
+add_action('pre_get_posts', 'wpsr_add_custom_post_type');
+add_filter('single_template', 'wpsr_get_custom_type_recipe_template');
 
 add_action('comment_post', 'wpsr_comment_ratings');
 add_filter('comment_text', 'wpsr_render_ratings', 10, 3);
