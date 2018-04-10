@@ -18,38 +18,41 @@ function wpsr_comment_ratings($comment_id) {
 }
 
 function wpsr_update_average_rating($comment_id) {
-  $comment = get_comment($comment_id);
-  $post_id = $comment->comment_post_ID;
 
-  //get all ratings on post and calculate average
-  $args = array(
-    'post_id' => $post_id,
-    'meta_query' => array(
-      array(
-        'key' => 'wpsr_rate'
-      )
-    )
-  );
+    $comment = get_comment($comment_id);
+    $post_id = $comment->comment_post_ID;
+    if ( 'wpsr_recipe' == get_post_type($post_id) ) {
 
-  $comments_with_ratings = get_comments($args);
+      //get all ratings on post and calculate average
+      $args = array(
+        'post_id' => $post_id,
+        'meta_query' => array(
+          array(
+            'key' => 'wpsr_rate'
+          )
+        )
+      );
 
-  $count = 0;
-  $sum = 0;
+      $comments_with_ratings = get_comments($args);
 
-  foreach ($comments_with_ratings as $comment_with_rating) {
-    $v = (int)get_comment_meta($comment_with_rating->comment_ID, 'wpsr_rate', true);
-    if ($v > 0 && $v < 6) {
-        $count = $count + 1;
-        $sum = $sum + $v;
+      $count = 0;
+      $sum = 0;
+
+      foreach ($comments_with_ratings as $comment_with_rating) {
+        $v = (int)get_comment_meta($comment_with_rating->comment_ID, 'wpsr_rate', true);
+        if ($v > 0 && $v < 6) {
+            $count = $count + 1;
+            $sum = $sum + $v;
+        }
+      }
+      $average = round($sum / $count, 1);
+      if (!add_post_meta($post_id, 'wpsr_number_of_ratings' , $count, true)) {
+        update_post_meta($post_id, 'wpsr_number_of_ratings' , $count);
+      }
+      if (!add_post_meta($post_id, 'wpsr_average_rating' , $average, true)) {
+        update_post_meta($post_id, 'wpsr_average_rating' , $average);
+      }
     }
-  }
-  $average = round($sum / $count, 1);
-  if (!add_post_meta($post_id, 'wpsr_number_of_ratings' , $count, true)) {
-    update_post_meta($post_id, 'wpsr_number_of_ratings' , $count);
-  }
-  if (!add_post_meta($post_id, 'wpsr_average_rating' , $average, true)) {
-    update_post_meta($post_id, 'wpsr_average_rating' , $average);
-  }
 }
 
 function wpsr_render_ratings($comment_text, $comment) {
@@ -76,40 +79,42 @@ function wpsr_render_average_rating($content) {
 }
 
 function wpsr_ratings_in_form() {
-  echo '
-    <span id="wpsr_rate_1" class="wpsr_rating">
-      <svg xmlns="http://www.w3.org/2000/svg" width="255" height="240" viewBox="0 0 51 48">
-      <title>1 Star</title>
-      <path fill="none" stroke="#000" d="m25,1 6,17h18l-14,11 5,17-15-10-15,10 5-17-14-11h18z"/>
-      </svg>
-    </span>
-    <span id="wpsr_rate_2" class="wpsr_rating">
-      <svg xmlns="http://www.w3.org/2000/svg" width="255" height="240" viewBox="0 0 51 48">
-      <title>2 Stars</title>
-      <path fill="none" stroke="#000" d="m25,1 6,17h18l-14,11 5,17-15-10-15,10 5-17-14-11h18z"/>
-      </svg>
-    </span>
-    <span id="wpsr_rate_3" class="wpsr_rating">
-      <svg xmlns="http://www.w3.org/2000/svg" width="255" height="240" viewBox="0 0 51 48">
-      <title>3 Stars</title>
-      <path fill="none" stroke="#000" d="m25,1 6,17h18l-14,11 5,17-15-10-15,10 5-17-14-11h18z"/>
-      </svg>
-    </span>
-    <span id="wpsr_rate_4" class="wpsr_rating">
-      <svg xmlns="http://www.w3.org/2000/svg" width="255" height="240" viewBox="0 0 51 48">
-      <title>4 Stars</title>
-      <path fill="none" stroke="#000" d="m25,1 6,17h18l-14,11 5,17-15-10-15,10 5-17-14-11h18z"/>
-      </svg>
-    </span>
-    <span id="wpsr_rate_5" class="wpsr_rating">
-      <svg xmlns="http://www.w3.org/2000/svg" width="255" height="240" viewBox="0 0 51 48">
-      <title>5 Stars</title>
-      <path fill="none" stroke="#000" d="m25,1 6,17h18l-14,11 5,17-15-10-15,10 5-17-14-11h18z"/>
-      </svg>
-    </span>
-    <span id="wpsr_rate_clear">Clear rating</span>
-    <input type="hidden" name="wpsr_rate" id="wpsr_rate" value="" />
-    ';
+  if ( 'wpsr_recipe' == get_post_type() ) {
+    echo '
+      <span id="wpsr_rate_1" class="wpsr_rating">
+        <svg xmlns="http://www.w3.org/2000/svg" width="255" height="240" viewBox="0 0 51 48">
+        <title>1 Star</title>
+        <path fill="none" stroke="#000" d="m25,1 6,17h18l-14,11 5,17-15-10-15,10 5-17-14-11h18z"/>
+        </svg>
+      </span>
+      <span id="wpsr_rate_2" class="wpsr_rating">
+        <svg xmlns="http://www.w3.org/2000/svg" width="255" height="240" viewBox="0 0 51 48">
+        <title>2 Stars</title>
+        <path fill="none" stroke="#000" d="m25,1 6,17h18l-14,11 5,17-15-10-15,10 5-17-14-11h18z"/>
+        </svg>
+      </span>
+      <span id="wpsr_rate_3" class="wpsr_rating">
+        <svg xmlns="http://www.w3.org/2000/svg" width="255" height="240" viewBox="0 0 51 48">
+        <title>3 Stars</title>
+        <path fill="none" stroke="#000" d="m25,1 6,17h18l-14,11 5,17-15-10-15,10 5-17-14-11h18z"/>
+        </svg>
+      </span>
+      <span id="wpsr_rate_4" class="wpsr_rating">
+        <svg xmlns="http://www.w3.org/2000/svg" width="255" height="240" viewBox="0 0 51 48">
+        <title>4 Stars</title>
+        <path fill="none" stroke="#000" d="m25,1 6,17h18l-14,11 5,17-15-10-15,10 5-17-14-11h18z"/>
+        </svg>
+      </span>
+      <span id="wpsr_rate_5" class="wpsr_rating">
+        <svg xmlns="http://www.w3.org/2000/svg" width="255" height="240" viewBox="0 0 51 48">
+        <title>5 Stars</title>
+        <path fill="none" stroke="#000" d="m25,1 6,17h18l-14,11 5,17-15-10-15,10 5-17-14-11h18z"/>
+        </svg>
+      </span>
+      <span id="wpsr_rate_clear">Clear rating</span>
+      <input type="hidden" name="wpsr_rate" id="wpsr_rate" value="" />
+      ';
+    }
 }
 
 function wpsr_register_custom_post_type() {
@@ -120,6 +125,7 @@ function wpsr_register_custom_post_type() {
         'name' => __('Recipes'),
         'singular_name' => __('Recipe')
       ),
+      'supports' => array('title', 'editor', 'comments'),
       'public' => true,
       'has_archive' => false,
       'rewrite' => array('slug' => 'recipe')
@@ -129,7 +135,7 @@ function wpsr_register_custom_post_type() {
 
 function wpsr_add_custom_post_type($query) {
   if(is_home() && $query->is_main_query()) {
-    $query->set('post-type', ['post', 'page', 'wpsr_recipe']);
+    $query->set('post_type', array('post', 'wpsr_recipe'));
   }
   return $query;
 }
@@ -144,7 +150,7 @@ function wpsr_get_custom_type_recipe_template($single_template) {
 }
 
 add_action('init', 'wpsr_register_custom_post_type');
-add_action('pre_get_posts', 'wpsr_add_custom_post_type');
+add_filter('pre_get_posts', 'wpsr_add_custom_post_type');
 add_filter('single_template', 'wpsr_get_custom_type_recipe_template');
 
 add_action('comment_post', 'wpsr_comment_ratings');
