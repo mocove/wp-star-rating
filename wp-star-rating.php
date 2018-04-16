@@ -79,6 +79,15 @@ function wpsr_render_average_rating($content) {
 }
 
 function wpsr_ratings_in_form() {
+  /* For checking for nesting at some point. Does not work, comment_parent is always 0. */
+  /*
+  $comment_id = get_comment_ID();
+  $comment = get_comment($comment_id);
+  $comment_has_parent = false;
+  if ('0' != $comment->comment_parent) {
+    $comment_has_parent = true;
+  }
+  */
   if ( 'wpsr_recipe' == get_post_type() ) {
     echo '
       <span id="wpsr_rate_1" class="wpsr_rating">

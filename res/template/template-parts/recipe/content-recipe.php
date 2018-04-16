@@ -20,7 +20,7 @@
 	?>
 	<header class="entry-header">
 		<?php
-		if ( 'post' === get_post_type() ) {
+		if ( 'wpsr_recipe' === get_post_type() ) {
 			echo '<div class="entry-meta">';
 				if ( is_single() ) {
 					twentyseventeen_posted_on();
