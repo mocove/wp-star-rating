@@ -78,6 +78,18 @@ function wpsr_render_average_rating($content) {
   return 'Rating: ' . $average . ' (' . $count . ' ratings)<br />' . $content;
 }
 
+function wpsr_get_ratings_count() {
+  $post_id = get_the_ID();
+  $count = get_post_meta($post_id, 'wpsr_number_of_ratings', true);
+  return $count;
+}
+
+function wpsr_get_average_count() {
+  $post_id = get_the_ID();
+  $average = get_post_meta($post_id, 'wpsr_average_rating', true);
+  return $average;
+}
+
 function wpsr_ratings_in_form() {
   /* For checking for nesting at some point. Does not work, comment_parent is always 0. */
   /*
@@ -158,6 +170,25 @@ function wpsr_get_custom_type_recipe_template($single_template) {
   return $single_template;
 }
 
+function wpsr_shortcodes_init() {
+  function wpsr_get_ratings_count_on_recipe_shortcode($count = null) {
+    $count = wpsr_get_ratings_count();
+    return $count;
+  }
+
+  function wpsr_get_average_rating_on_recipe_shortcode($average = null, $count = null) {
+    $average = wpsr_get_average_count();
+    return $average;
+  }
+
+  add_shortcode('wpsr_get_ratings_count_on_recipe', 'wpsr_get_ratings_count_on_recipe_shortcode' );
+  add_shortcode('wpsr_get_average_rating_on_recipe', 'wpsr_get_average_rating_on_recipe_shortcode' );
+}
+
+/*
+actions and filter registrations
+*/
+
 add_action('init', 'wpsr_register_custom_post_type');
 add_filter('pre_get_posts', 'wpsr_add_custom_post_type');
 add_filter('single_template', 'wpsr_get_custom_type_recipe_template');
@@ -167,6 +198,7 @@ add_filter('comment_text', 'wpsr_render_ratings', 10, 3);
 //add_filter('comments_template', 'wpsr_recipe_comments_template');
 add_action('comment_form_top', 'wpsr_ratings_in_form'); // displays rating in comment form
 add_filter('the_content', 'wpsr_render_average_rating');
+add_action('init', 'wpsr_shortcodes_init');
 wp_enqueue_script('wpsr-script', plugins_url('main.js', __FILE__), array('jquery'));
 wp_enqueue_style('wpsr-style', plugins_url('css/wpsr_main.css', __FILE__));
 
