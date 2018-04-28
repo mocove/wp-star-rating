@@ -64,6 +64,7 @@
 			'link_after'  => '</span>',
 		) );
 		?>
+		<?php echo do_shortcode(get_post_meta($post->ID, 'recipe_schema', true)); ?>
 	</div><!-- .entry-content -->
 
 	<?php

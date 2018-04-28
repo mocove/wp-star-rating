@@ -146,7 +146,17 @@ function wpsr_register_custom_post_type() {
         'name' => __('Recipes'),
         'singular_name' => __('Recipe')
       ),
-      'supports' => array('title', 'editor', 'comments'),
+      'supports' => array(
+        'title',
+        'editor',
+        'author',
+        'thumbnail',
+        'excerpt',
+        'trackbacks',
+        'comments',
+        'custom-fields',
+        'revisions'
+      ),
       'public' => true,
       'has_archive' => false,
       'rewrite' => array('slug' => 'recipe')
