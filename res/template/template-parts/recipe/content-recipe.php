@@ -65,6 +65,24 @@
 		) );
 		?>
 
+		<?php
+			/* output schema */
+			echo
+				'<script type="application/ld+json">
+					{
+						"aggregateRating": {
+							"@type": "AggregateRating",
+							"ratingValue": "' . wpsr_get_average_count() . '",
+							"reviewCount": "' . wpsr_get_ratings_count() . '"
+						}
+					}
+
+				</script>';
+
+			do_shortcode(get_post_meta($post->ID, 'recipe_schema', true));
+
+		 ?>
+
 	</div><!-- .entry-content -->
 
 	<?php
@@ -72,5 +90,7 @@
 		twentyseventeen_entry_footer();
 	}
 	?>
+
+
 
 </article><!-- #post-## -->
