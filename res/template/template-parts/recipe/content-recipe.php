@@ -64,7 +64,7 @@
 			'link_after'  => '</span>',
 		) );
 		?>
-		<?php echo do_shortcode(get_post_meta($post->ID, 'wpsr_cook_time', true)); ?>
+
 	</div><!-- .entry-content -->
 
 	<?php
