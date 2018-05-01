@@ -65,30 +65,6 @@
 		) );
 		?>
 
-		<?php
-			/* output schema */
-			echo
-				'<script type="application/ld+json">
-					{
-						"name": "' . get_post_meta($post->ID, 'wpsr_recipe_name', true) . '",
-						"image": [
-							"' . get_post_meta($post->ID, 'wpsr_recipe_image-1x1', true) . '",
-							"' . get_post_meta($post->ID, 'wpsr_recipe_image-4x3', true) . '",
-							"' . get_post_meta($post->ID, 'wpsr_recipe_image-16x9', true) . '"
-						],
-						"aggregateRating": {
-							"@type": "AggregateRating",
-							"ratingValue": "' . wpsr_get_average_count() . '",
-							"reviewCount": "' . wpsr_get_ratings_count() . '"
-						}
-					}
-
-				</script>';
-
-			echo do_shortcode(get_post_meta($post->ID, 'recipe_schema', true));
-
-		 ?>
-
 	</div><!-- .entry-content -->
 
 	<?php

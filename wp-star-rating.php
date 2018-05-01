@@ -195,6 +195,64 @@ function wpsr_shortcodes_init() {
   add_shortcode('wpsr_get_average_rating_on_recipe', 'wpsr_get_average_rating_on_recipe_shortcode' );
 }
 
+function wpsr_add_recipe_schema($content) {
+  if (get_post_type() === 'wpsr_recipe' && in_the_loop() && is_main_query()) {
+    $id = get_the_ID();
+
+    /* parse ingredients */
+    $recipe_string = get_post_meta($id, 'wpsr_recipe_recipeingredient', true);
+    $recipe_array = explode(",", $recipe_string );
+    $recipe_ingredients = "";
+    foreach ($recipe_array as $ing) {
+      $recipe_ingredients = $recipe_ingredients . '"' . $ing . '",';
+    }
+    $recipe_ingredients = rtrim($recipe_ingredients, ',');
+
+    $schema =
+    '<script type="application/ld+json">
+      {
+        "@context": "http://schema.org",
+        "@type": "Recipe",
+        "name": "' . get_post_meta($id, 'wpsr_recipe_name', true) . '",
+        "image": [
+          "' . get_post_meta($id, 'wpsr_recipe_image-1x1', true) . '",
+          "' . get_post_meta($id, 'wpsr_recipe_image-4x3', true) . '",
+          "' . get_post_meta($id, 'wpsr_recipe_image-16x9', true) . '"
+        ],
+        "author": {
+          "@type": "Person",
+          "name": "' . get_post_meta($id, 'wpsr_recipe_author-name', true) . '"
+        },
+        "datePublished": "' . get_post_meta($id, 'wpsr_recipe_datepublished', true) . '",
+        "description": "' . get_post_meta($id, 'wpsr_recipe_description', true) . '",
+        "aggregateRating": {
+          "@type": "AggregateRating",
+          "ratingValue": "' . wpsr_get_average_count() . '",
+          "reviewCount": "' . wpsr_get_ratings_count() . '"
+        },
+        "prepTime": "' . get_post_meta($id, 'wpsr_recipe_preptime', true) . '",
+        "totalTime": "' . get_post_meta($id, 'wpsr_recipe_totaltime', true) . '",
+        "recipeYield": "' . get_post_meta($id, 'wpsr_recipe_recipeyield', true) . '",
+        "nutrition": {
+          "@type": "NutritionInformation",
+          "servingSize": "' . get_post_meta($id, 'wpsr_recipe_nutrition-servingsize', true) . '",
+          "calories": "' . get_post_meta($id, 'wpsr_recipe_nutrition-calories', true) . '",
+          "fatContent": "' . get_post_meta($id, 'wpsr_recipe_nutrition-fatcontent', true) . '"
+        },
+        "recipeIngredient": [
+          /* TODO */
+          ' . $recipe_ingredients . '
+        ],
+        "recipeInstructions": "' . get_post_meta($id, 'wpsr_recipe_recipeinstructions', true) . '"
+      }
+
+    </script>';
+
+    $content = $content . $schema;
+    return $content;
+  }
+}
+
 require plugin_dir_path(__FILE__) . 'res/custom-meta-boxes.php';
 
 /*
@@ -204,7 +262,7 @@ actions and filter registrations
 add_action('init', 'wpsr_register_custom_post_type');
 add_filter('pre_get_posts', 'wpsr_add_custom_post_type');
 add_filter('single_template', 'wpsr_get_custom_type_recipe_template');
-
+add_filter('the_content', 'wpsr_add_recipe_schema');
 add_action('comment_post', 'wpsr_comment_ratings');
 add_filter('comment_text', 'wpsr_render_ratings', 10, 3);
 //add_filter('comments_template', 'wpsr_recipe_comments_template');
