@@ -8,10 +8,6 @@ Author: Martin Ove Christensen
 Author URI: https://martinove.dk
 */
 
-function wpsr_hello_world() {
-    echo "Hello World.";
-}
-
 function wpsr_comment_ratings($comment_id) {
     add_comment_meta($comment_id, 'wpsr_rate', $_POST['wpsr_rate'], true);
     wpsr_update_average_rating($comment_id);
@@ -46,11 +42,11 @@ function wpsr_update_average_rating($comment_id) {
         }
       }
       $average = round($sum / $count, 1);
-      if (!add_post_meta($post_id, 'wpsr_number_of_ratings' , $count, true)) {
-        update_post_meta($post_id, 'wpsr_number_of_ratings' , $count);
+      if (!add_post_meta($post_id, 'wpsr_recipe_aggregaterating-reviewcount' , $count, true)) {
+        update_post_meta($post_id, 'wpsr_recipe_aggregaterating-reviewcount' , $count);
       }
-      if (!add_post_meta($post_id, 'wpsr_average_rating' , $average, true)) {
-        update_post_meta($post_id, 'wpsr_average_rating' , $average);
+      if (!add_post_meta($post_id, 'wpsr_recipe_aggregaterating-ratingvalue' , $average, true)) {
+        update_post_meta($post_id, 'wpsr_recipe_aggregaterating-ratingvalue' , $average);
       }
     }
 }
@@ -73,20 +69,20 @@ function wpsr_render_ratings($comment_text, $comment) {
 
 function wpsr_render_average_rating($content) {
   $post_id = get_the_ID();
-  $average = get_post_meta($post_id, 'wpsr_average_rating', true);
-  $count = get_post_meta($post_id, 'wpsr_number_of_ratings', true);
+  $average = get_post_meta($post_id, 'wpsr_recipe_aggregaterating-ratingvalue', true);
+  $count = get_post_meta($post_id, 'wpsr_recipe_aggregaterating-reviewcount', true);
   return 'Rating: ' . $average . ' (' . $count . ' ratings)<br />' . $content;
 }
 
 function wpsr_get_ratings_count() {
   $post_id = get_the_ID();
-  $count = get_post_meta($post_id, 'wpsr_number_of_ratings', true);
+  $count = get_post_meta($post_id, 'wpsr_recipe_aggregaterating-reviewcount', true);
   return $count;
 }
 
 function wpsr_get_average_count() {
   $post_id = get_the_ID();
-  $average = get_post_meta($post_id, 'wpsr_average_rating', true);
+  $average = get_post_meta($post_id, 'wpsr_recipe_aggregaterating-ratingvalue', true);
   return $average;
 }
 
@@ -227,8 +223,8 @@ function wpsr_add_recipe_schema($content) {
         "description": "' . get_post_meta($id, 'wpsr_recipe_description', true) . '",
         "aggregateRating": {
           "@type": "AggregateRating",
-          "ratingValue": "' . wpsr_get_average_count() . '",
-          "reviewCount": "' . wpsr_get_ratings_count() . '"
+          "ratingValue": "' . get_post_meta($id, 'wpsr_recipe_aggregaterating-ratingvalue', true) . '",
+          "reviewCount": "' . get_post_meta($id, 'wpsr_recipe_aggregaterating-reviewcount', true) . '"
         },
         "prepTime": "' . get_post_meta($id, 'wpsr_recipe_preptime', true) . '",
         "totalTime": "' . get_post_meta($id, 'wpsr_recipe_totaltime', true) . '",
