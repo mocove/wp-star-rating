@@ -98,7 +98,7 @@ function recipe_meta_box_html($post) {
   <br />
 
   <label for="wpsr_recipe_recipeinstructions">recipeInstructions</label>
-  <input type="text" name="wpsr_recipe_recipeinstructions" id="wpsr_recipe_recipeinstructions" value="<?php echo get_post_meta($post->ID, 'wpsr_recipe_recipeinstructions', true); ?>" />
+  <textarea cols="80" name="wpsr_recipe_recipeinstructions" id="wpsr_recipe_recipeinstructions"><?php echo esc_textarea(get_post_meta($post->ID, 'wpsr_recipe_recipeinstructions', true)); ?></textarea>
   <br />
 
   <label for="wpsr_recipe_cook_time">Cook time(deprecated)</label>
