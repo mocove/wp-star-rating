@@ -72,7 +72,12 @@ function wpsr_render_average_rating($content) {
     $post_id = get_the_ID();
     $average = get_post_meta($post_id, 'wpsr_recipe_aggregaterating-ratingvalue', true);
     $count = get_post_meta($post_id, 'wpsr_recipe_aggregaterating-reviewcount', true);
-    return 'Rating: ' . $average . ' (' . $count . ' ratings)<br />' . $content;
+    if ( $count > 0 ) {
+      return 'Rating: ' . $average . ' (' . $count . ' ratings)<br />' . $content;
+    }
+    else {
+      return 'No rating on recipe yet. Be the first to rate!<br />' . $content;
+    }
   }
   else {
     return $content;
