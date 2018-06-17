@@ -73,7 +73,7 @@ function wpsr_render_average_rating($content) {
     $average = get_post_meta($post_id, 'wpsr_recipe_aggregaterating-ratingvalue', true);
     $count = get_post_meta($post_id, 'wpsr_recipe_aggregaterating-reviewcount', true);
     if ( $count > 0 ) {
-      return 'Rating: ' . $average . ' (' . $count . ' ratings)<br />' . $content;
+      return $content . '<br /><br />Rating: ' . $average . ' (' . $count . ' ratings)';
     }
     else {
       return 'No rating on recipe yet. Be the first to rate!<br />' . $content;
@@ -203,7 +203,7 @@ function wpsr_shortcodes_init() {
 }
 
 function wpsr_add_recipe_schema($content) {
-  if (get_post_type() === 'wpsr_recipe' && in_the_loop() && is_main_query()) {
+  if (get_post_type() === 'wpsr_recipe' && in_the_loop() && is_main_query() && is_singular() ) {
     $id = get_the_ID();
 
     /* parse ingredients */
