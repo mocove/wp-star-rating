@@ -21,10 +21,15 @@ function recipe_meta_box_html($post) {
     author.name
     datePublished
     description
+    keywords
     aggregateRating.ratingValue
     aggregateRating.reviewCount
     prepTime
+    cookTime
     totalTime
+    recipeYield
+    recipeCategory
+    recipeCuisine
     nutrition.servingSize
     nutrition.calories
     nutrition.fatContent
@@ -61,6 +66,10 @@ function recipe_meta_box_html($post) {
   <input type="text" name="wpsr_recipe_description" id="wpsr_recipe_description" value="<?php echo get_post_meta($post->ID, 'wpsr_recipe_description', true); ?>" />
   <br />
 
+  <label for="wpsr_recipe_keywords">keywords. Input as comma-separated: key1, key2, key3</label>
+  <input type="text" name="wpsr_recipe_keywords" id="wpsr_recipe_keywords" value="<?php echo get_post_meta($post->ID, 'wpsr_recipe_keywords', true); ?>" />
+  <br />
+
   <label for="wpsr_recipe_aggregaterating-ratingvalue">aggregateRating.ratingValue</label>
   <input readonly type="text" name="wpsr_recipe_aggregaterating-ratingvalue" id="wpsr_recipe_aggregaterating-ratingvalue" value="<?php echo get_post_meta($post->ID, 'wpsr_recipe_aggregaterating-ratingvalue', true); ?>" />
   <br />
@@ -73,12 +82,24 @@ function recipe_meta_box_html($post) {
   <input type="text" name="wpsr_recipe_preptime" id="wpsr_recipe_preptime" value="<?php echo get_post_meta($post->ID, 'wpsr_recipe_preptime', true); ?>" />
   <br />
 
+  <label for="wpsr_recipe_cooktime">cookTime</label>
+  <input type="text" name="wpsr_recipe_cooktime", id="wpsr_recipe_cooktime" value="<?php echo get_post_meta($post->ID, 'wpsr_cooktime', true); ?>" />
+  <br />
+
   <label for="wpsr_recipe_totaltime">totalTime</label>
   <input type="text" name="wpsr_recipe_totaltime" id="wpsr_recipe_totaltime" value="<?php echo get_post_meta($post->ID, 'wpsr_recipe_totaltime', true); ?>" />
   <br />
 
   <label for="wpsr_recipe_recipeyield">recipeYield</label>
   <input type="text" name="wpsr_recipe_recipeyield" id="wpsr_recipe_recipeyield" value="<?php echo get_post_meta($post->ID, 'wpsr_recipe_recipeyield', true); ?>" />
+  <br />
+
+  <label for="wpsr_recipe_recipecategory">recipeCategory</label>
+  <input type="text" name="wpsr_recipe_recipecategory" id="wpsr_recipe_recipecategory" value="<?php echo get_post_meta($post->ID, 'wpsr_recipe_recipecategory', true); ?>" />
+  <br />
+
+  <label for="wpsr_recipe_recipecuisine">recipeCuisine</label>
+  <input type="text" name="wpsr_recipe_recipecuisine" id="wpsr_recipe_recipecuisine" value="<?php echo get_post_meta($post->ID, 'wpsr_recipe_recipecuisine', true); ?>" />
   <br />
 
   <label for="wpsr_recipe_nutrition-servingsize">nutrition.servingSize</label>
@@ -93,16 +114,13 @@ function recipe_meta_box_html($post) {
   <input type="text" name="wpsr_recipe_nutrition-fatcontent" id="wpsr_recipe_nutrition-fatcontent" value="<?php echo get_post_meta($post->ID, 'wpsr_recipe_nutrition-fatcontent', true); ?>" />
   <br />
 
-  <label for="wpsr_recipe_recipeingredient">recipeIngredient. Input as array: ['ing1', 'ing2', 'ing3']</label>
+  <label for="wpsr_recipe_recipeingredient">recipeIngredient. Input as comma-separated: ing1, ing2, ing3</label>
   <input type="text" name="wpsr_recipe_recipeingredient" id="wpsr_recipe_recipeingredient" value="<?php echo get_post_meta($post->ID, 'wpsr_recipe_recipeingredient', true); ?>" />
   <br />
 
-  <label for="wpsr_recipe_recipeinstructions">recipeInstructions</label>
+  <label for="wpsr_recipe_recipeinstructions">recipeInstructions. Include []. See <a target="_blank" href="https://developers.google.com/search/docs/data-types/recipe#recipe_properties">Recipe at Google</a></label>
   <textarea cols="80" name="wpsr_recipe_recipeinstructions" id="wpsr_recipe_recipeinstructions"><?php echo esc_textarea(get_post_meta($post->ID, 'wpsr_recipe_recipeinstructions', true)); ?></textarea>
-  <br />
 
-  <label for="wpsr_recipe_cook_time">Cook time(deprecated)</label>
-  <input type="text" name="wpsr_recipe_cook_time", id="wpsr_recipe_cook_time" value="<?php echo get_post_meta($post->ID, 'wpsr_cook_time', true); ?>" />
   <?php
 }
 
@@ -115,10 +133,14 @@ function wpsr_save_meta_box_data($post_id) {
     "wpsr_recipe_author-name",
     "wpsr_recipe_datepublished",
     "wpsr_recipe_description",
+    "wpsr_recipe_keywords",
     "wpsr_recipe_aggregaterating-ratingvalue",
     "wpsr_recipe_aggregaterating-reviewcount",
     "wpsr_recipe_recipeyield",
+    "wpsr_recipe_recipecategory",
+    "wpsr_recipe_recipecuisine",
     "wpsr_recipe_preptime",
+    "wpsr_recipe_cooktime",
     "wpsr_recipe_totaltime",
     "wpsr_recipe_nutrition-servingsize",
     "wpsr_recipe_nutrition-calories",

@@ -208,12 +208,20 @@ function wpsr_add_recipe_schema($content) {
 
     /* parse ingredients */
     $recipe_string = get_post_meta($id, 'wpsr_recipe_recipeingredient', true);
-    $recipe_array = explode(",", $recipe_string );
+    $recipe_array = explode(",", $recipe_string);
     $recipe_ingredients = "";
     foreach ($recipe_array as $ing) {
-      $recipe_ingredients = $recipe_ingredients . '"' . $ing . '",';
+      $recipe_ingredients = $recipe_ingredients . '"' . ltrim($ing) . '",';
     }
     $recipe_ingredients = rtrim($recipe_ingredients, ',');
+
+    /* parse keywords
+    $keywords_string = get_post_meta($id, 'wpsr_recipe_keywords', true);
+    $keywords_array = explode(",", $keywords_string);
+    $keywords = "";
+    foreach ($keywords_array as $keyword) {
+      $keywords = $keywords .
+    }*/
 
     $schema =
     '<script type="application/ld+json">
@@ -232,14 +240,18 @@ function wpsr_add_recipe_schema($content) {
         },
         "datePublished": "' . get_post_meta($id, 'wpsr_recipe_datepublished', true) . '",
         "description": "' . get_post_meta($id, 'wpsr_recipe_description', true) . '",
+        "keywords": "' . get_post_meta($id, 'wpsr_recipe_keywords', true) . '",
         "aggregateRating": {
           "@type": "AggregateRating",
           "ratingValue": "' . get_post_meta($id, 'wpsr_recipe_aggregaterating-ratingvalue', true) . '",
           "reviewCount": "' . get_post_meta($id, 'wpsr_recipe_aggregaterating-reviewcount', true) . '"
         },
         "prepTime": "' . get_post_meta($id, 'wpsr_recipe_preptime', true) . '",
+        "cookTime": "' . get_post_meta($id, 'wpsr_recipe_cooktime', true) . '",
         "totalTime": "' . get_post_meta($id, 'wpsr_recipe_totaltime', true) . '",
         "recipeYield": "' . get_post_meta($id, 'wpsr_recipe_recipeyield', true) . '",
+        "recipeCategory": "' . get_post_meta($id, 'wpsr_recipe_recipecategory', true) . '",
+        "recipeCuisine": "' . get_post_meta($id, 'wpsr_recipe_recipecuisine', true) . '",
         "nutrition": {
           "@type": "NutritionInformation",
           "servingSize": "' . get_post_meta($id, 'wpsr_recipe_nutrition-servingsize', true) . '",
@@ -247,10 +259,9 @@ function wpsr_add_recipe_schema($content) {
           "fatContent": "' . get_post_meta($id, 'wpsr_recipe_nutrition-fatcontent', true) . '"
         },
         "recipeIngredient": [
-          /* TODO */
           ' . $recipe_ingredients . '
         ],
-        "recipeInstructions": "' . get_post_meta($id, 'wpsr_recipe_recipeinstructions', true) . '"
+        "recipeInstructions": ' . get_post_meta($id, 'wpsr_recipe_recipeinstructions', true) . '
       }
 
     </script>';
