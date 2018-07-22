@@ -83,7 +83,7 @@ function recipe_meta_box_html($post) {
   <br />
 
   <label for="wpsr_recipe_cooktime">cookTime</label>
-  <input type="text" name="wpsr_recipe_cooktime", id="wpsr_recipe_cooktime" value="<?php echo get_post_meta($post->ID, 'wpsr_cooktime', true); ?>" />
+  <input type="text" name="wpsr_recipe_cooktime", id="wpsr_recipe_cooktime" value="<?php echo get_post_meta($post->ID, 'wpsr_recipe_cooktime', true); ?>" />
   <br />
 
   <label for="wpsr_recipe_totaltime">totalTime</label>
